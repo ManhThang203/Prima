@@ -15,18 +15,44 @@ class AuthService {
     return user;
   }
 
-  async generateUserTokens(user, userAgent) {
+  generateAccessToken(user) {
     const expiresAt = Math.floor(Date.now() / 1000) + authConfig.accessTokenTTL;
+    const tokenPayload = {
+      sub: user.id,
+      exp: expiresAt,
+    };
+    const accessToken = jwt.sign(tokenPayload, authConfig.jwtSecret);
+    return accessToken;
+  }
 
-    const accesstoken = jwt.sign(
-      {
-        userId: user.id,
-        exp: expiresAt,
+  /**
+   * Tìm kiếm user theo ID
+    getUserById ở bên auth không có như cầu tái sử dụng ở nhiều nơi, nên mình sẽ đặt nó ở đây để tránh phải tạo thêm 1 service khác chỉ để chứa 1 hàm getById
+   */
+  async getUserById(id) {
+    // Kiểm tra đầu vào: không cho phép id rỗng, null hoặc undefined
+    if (!id) throw new Error("User ID is required");
+
+    // Truy vấn database, tìm đúng 1 user có id khớp
+    // findUnique đảm bảo chỉ trả về 1 bản ghi duy nhất
+    const user = await prisma.user.findUnique({
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        avatar: true,
+        isVerified: true,
+        emailVerifiedAt: true,
       },
-      authConfig.jwtSecret,
-    );
+      where: { id },
+    });
 
-    return accesstoken;
+    // Trả về user nếu tìm thấy, hoặc null nếu không có
+
+    return user;
   }
 }
 
