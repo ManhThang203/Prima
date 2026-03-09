@@ -1,6 +1,24 @@
 {
+  "name": "be-f8-prima",
+  "_moduleAliases": {
+    "@root": "./",
+    "@": "./src"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "generate-post-ideas": "node ./src/commands/generatePostIdeas.js",
+    "generate-post": "node ./src/commands/generatePost.js"
+  },
   "dependencies": {
+    "@prisma/adapter-mariadb": "^7.4.2",
+    "@prisma/client": "^7.4.2",
+    "cors": "^2.8.6",
     "dotenv": "^17.3.1",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "module-alias": "^2.3.4"
+  },
+  "devDependencies": {
+    "prisma": "^7.4.2"
   }
 }

@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+
+model User {
+  id        BigInt   @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  posts     Post[] // 1 User sẽ có nhiều bài viết
+  createdAt DateTime @default(now()) // tự động lưu thời gian tạo
+  updatedAt DateTime @updatedAt // tự động cập nhật thời gian khi có thay đổi
+
+  @@map("users") // Đặt tên bảng trong database là "users"
+}
+
+model Post {
+  id        BigInt   @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  content   String?  @db.Text
+  published Boolean  @default(false) // Mặc định bài chưa được publish
+  userId  BigInt // khóa ngoại liên kết đến User
+  user    User     @relation(fields: [userId], references: [id]) //  Khai báo quan hệ: `userId` trong Post trỏ tới `id` trong User 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("posts") // Đặt tên bảng trong database là "posts"
+}

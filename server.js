@@ -1,28 +1,27 @@
-require("dotenv").config();
 require("module-alias/register");
-require("./polyfill");
 
 const express = require("express");
 const cors = require("cors");
 
-const rootRouter = require("@/routes");
+require("dotenv").config();
+require("./polyfill");
+
 const customResponse = require("@/middlewares/customResponse");
 const errorHandle = require("@/middlewares/errorHandle");
 const notFoundHandle = require("@/middlewares/notFoundHandle");
-
+const rootRoute = require("@/routes");
 const app = express();
 const port = 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
 app.use(customResponse);
-app.use(express.static("public"));
+app.use(express.json());
 
 // Router
-app.use("/api", rootRouter);
+app.use("/api", rootRoute);
 
-// Error handle
+// Error handling middleware
 app.use(notFoundHandle);
 app.use(errorHandle);
 
