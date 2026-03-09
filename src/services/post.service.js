@@ -8,13 +8,13 @@ class PostService {
         title: true,
         slug: true,
         content: true,
-        published: true,
+        publishedAt: true,
         createdAt: true,
         user: {
           select: {
             id: true,
             email: true,
-            name: true,
+            username: true,
           },
         },
       },
