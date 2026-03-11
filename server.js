@@ -13,8 +13,14 @@ const rootRoute = require("@/routes");
 const app = express();
 const port = 3000;
 
+// CORS configuration
+const corsOptions = {
+  origin: ["http://localhost:5173", "https://manththang203.github.io"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+};
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(customResponse);
 app.use(express.json());
 

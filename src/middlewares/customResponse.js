@@ -25,6 +25,11 @@ function customResponse(req, res, next) {
     res.error("Unauthorized.", httpCodes.unauthorized);
   };
 
+  // Forbidden
+  res.forbidden = () => {
+    res.error("Forbidden.", httpCodes.forbidden);
+  };
+
   next();
 }
 

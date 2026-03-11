@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
+    "queue": "node queue.js",
     "generate-post-ideas": "node ./src/commands/generatePostIdeas.js",
     "generate-post": "node ./src/commands/generatePost.js"
   },
@@ -18,7 +19,9 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "module-alias": "^2.3.4"
+    "module-alias": "^2.3.4",
+    "nodemailer": "^8.0.2",
+    "ua-parser-js": "^2.0.9"
   },
   "devDependencies": {
     "prisma": "^7.4.2"

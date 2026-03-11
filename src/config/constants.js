@@ -21,6 +21,16 @@ const constants = {
   prismaCodes: {
     duplicate: "P2002",
   },
+
+  QUEUE_STATUS: {
+    PENDING: "PENDING",
+    PROCESSING: "PROCESSING",
+    COMPLETED: "COMPLETED",
+    FAILED: "FAILED",
+  },
+
+  DEFAULT_PAGE: 1,
+  DEFAULT_LIMIT: 10,
 };
 
 module.exports = constants;
