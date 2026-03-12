@@ -9,9 +9,11 @@ class PostService {
   async getAll(page = DEFAULT_PAGE, limit = DEFAULT_LIMIT) {
     const pageNum = parseInt(page) || DEFAULT_PAGE;
     const limitNum = parseInt(limit) || DEFAULT_LIMIT;
+    // skip bỏ qua các bài viết
     const skip = (pageNum - 1) * limitNum;
 
     const [posts, total] = await Promise.all([
+      // findMany lấy ra các bài viết
       prisma.post.findMany({
         skip,
         take: limitNum,
@@ -38,16 +40,16 @@ class PostService {
           createdAt: "desc",
         },
       }),
-      prisma.post.count(),
+      prisma.post.count(), // đếm số bài post đã được tạo
     ]);
 
     return {
-      data: posts,
+      data: posts, // mảng bài viết
       pagination: {
-        page: pageNum,
-        limit: limitNum,
-        total,
-        totalPages: Math.ceil(total / limitNum),
+        page: pageNum,// Trang hiện tại
+        limit: limitNum, // số bài viết
+        total,// tổng bài viết
+        totalPages: Math.ceil(total / limitNum),// tổng số trang
       },
     };
   }
@@ -56,6 +58,7 @@ class PostService {
    * Get post by ID
    */
   async getById(id) {
+    // findUnique  láy ra 1 bài viết
     const post = await prisma.post.findUnique({
       where: { id },
       select: {
@@ -120,24 +123,27 @@ class PostService {
   async generateUniqueSlug(title) {
     const baseSlug = generateSlug(title);
 
-    // Check if base slug exists
+    // Kiểm tra xem slug trong  cơ sở dữ liệu đã tồn tại chưa
     const existingPost = await prisma.post.findUnique({
       where: { slug: baseSlug },
     });
 
+    // Nếu chưa tồn tại thì trả về slug
     if (!existingPost) {
       return baseSlug;
     }
 
-    // If exists, append number
+    // Nếu đã tồn tại thì thêm số vào slug
     let counter = 1;
     let newSlug = `${baseSlug}-${counter}`;
 
+    // Kiểm tra xem slug có tồn tại không, nếu có thì tăng counter và tạo slug mới
     while (await prisma.post.findUnique({ where: { slug: newSlug } })) {
       counter++;
       newSlug = `${baseSlug}-${counter}`;
     }
 
+    // Trả về slug mới
     return newSlug;
   }
 
@@ -189,31 +195,36 @@ class PostService {
    * Update post (only by author)
    */
   async update(id, userId, data) {
-    // Check if post exists and belongs to user
+    // Kiểm tra xem bài viết có tồn tại và thuộc về user không
     const existingPost = await prisma.post.findUnique({
       where: { id },
     });
 
+    // Lỗi: Không tìm thấy bài viết → NOT FOUND
     if (!existingPost) {
       return null;
     }
 
+    // Lỗi: Bài viết không thuộc về user này → FORBIDDEN
     if (existingPost.userId !== userId) {
       return "FORBIDDEN";
     }
 
-    // Generate new slug if title changed
+    // Tạo slug mới nếu tiêu đề thay đổi
     let slug = existingPost.slug;
+    // Kiểm tra xem có title mới không và title mới có khác title cũ không
     if (data.title && data.title !== existingPost.title) {
       slug = await this.generateUniqueSlug(data.title);
     }
 
+    // Cập nhật bài viết
     const post = await prisma.post.update({
       where: { id },
       data: {
-        ...data,
+        ...data, // dữ liêu cần update (data được spread ra)
         slug,
       },
+      // select để chọn các trường cần trả về
       select: {
         id: true,
         title: true,

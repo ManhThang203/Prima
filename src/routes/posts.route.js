@@ -14,9 +14,11 @@ router.get("/:id", postController.getById);
 // POST /api/posts - Auth required - create new post
 router.post("/", authRequired, postController.create);
 
-// PUT/PATCH /api/posts/:id - Auth required - update post (author only)
-router.put("/:id", authRequired, postController.update);
-router.patch("/:id", authRequired, postController.update);
+// PUT /api/posts/:id - Auth required - replace all fields (missing = null)
+router.put("/:id", authRequired, postController.put);
+
+// PATCH /api/posts/:id - Auth required - partial update (missing = keep existing)
+router.patch("/:id", authRequired, postController.patch);
 
 // DELETE /api/posts/:id - Auth required - delete post (author only)
 router.delete("/:id", authRequired, postController.remove);
