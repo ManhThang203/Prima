@@ -21,8 +21,9 @@ const corsOptions = {
 };
 // Middleware
 app.use(cors(corsOptions));
-app.use(customResponse);
 app.use(express.json());
+app.use(express.static('public'))
+app.use(customResponse);
 
 // Router
 app.use("/api", rootRoute);

@@ -1,5 +1,6 @@
 const postService = require("@/services/post.service");
 const { httpCodes } = require("@/config/constants");
+const postTransformer = require("@/transformers/post.transformer");
 
 /**
  * GET /api/posts
@@ -9,7 +10,11 @@ const getAll = async (req, res) => {
   const { page, limit } = req.query;
 
   const result = await postService.getAll(page, limit);
-  res.success(result);
+  const transformers = postTransformer(result.data);
+  res.success({
+    data: transformers,
+    pagination: result.pagination,
+  });
 };
 
 /**

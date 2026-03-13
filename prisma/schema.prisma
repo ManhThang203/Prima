@@ -50,7 +50,8 @@ model Post {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
+  postIdea PostIdea? @relation(fields: [postIdeaId], references: [id])
 
   @@map("posts")
 }
@@ -91,4 +92,16 @@ model Queue {
   updatedAt DateTime? @updatedAt
 
   @@map("queue")
+}
+
+model PostIdea {
+  id          BigInt   @id @default(autoincrement())
+  title       String
+  description String   @db.Text
+  status      String   @default("pending")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  posts       Post[]
+
+  @@map("post_ideas")
 }
